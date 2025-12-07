@@ -1,43 +1,49 @@
 import sys
 import pygame
-
 from config import (
     WINDOW_WIDTH,
     WINDOW_HEIGHT,
+    CELL_SIZE,
     FPS,
     COLOR_BG,
+    COLOR_GRID,
+    COLOR_TEXT,
 )
+from grid import CellGrid
 
 
 class GameApp:
-    """Główna klasa aplikacji – odpowiada za pętlę gry i ogólny flow."""
+    """Główna klasa aplikacji."""
 
     def __init__(self):
-        # Inicjalizacja pygame
         pygame.init()
-
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-        pygame.display.set_caption("Game of Life - pygame (skeleton)")
-
+        pygame.display.set_caption("Game of Life - pygame")
         self.clock = pygame.time.Clock()
-
         self.running = True
 
+        # Tworzymy siatkę
+        self.cols = WINDOW_WIDTH // CELL_SIZE
+        self.rows = WINDOW_HEIGHT // CELL_SIZE
+        self.grid = CellGrid(self.cols, self.rows)
+
+        # Stan symulacji
+        self.simulation_running = False
+
+        # Czcionka
+        self.font = pygame.font.SysFont("consolas", 18)
+
     def run(self):
-        """Główna pętla gry."""
         while self.running:
             self.handle_events()
             self.update()
             self.draw()
-
             self.clock.tick(FPS)
 
         pygame.quit()
         sys.exit()
 
-
     def handle_events(self):
-        """Obsługa zdarzeń (klawiatura, mysz, zamykanie okna)."""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -45,14 +51,48 @@ class GameApp:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
+                elif event.key == pygame.K_SPACE:
+                    self.simulation_running = not self.simulation_running
+                elif event.key == pygame.K_r:
+                    self.grid.randomize()
+                elif event.key == pygame.K_c:
+                    self.grid.clear()
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    x, y = event.pos
+                    col = x // CELL_SIZE
+                    row = y // CELL_SIZE
+                    self.grid.toggle_cell(col, row)
 
     def update(self):
-        """Aktualizacja logiki gry.
-        """
-        pass
+        if self.simulation_running:
+            self.grid.step()
+
+    def draw_grid(self):
+        for x in range(0, WINDOW_WIDTH, CELL_SIZE):
+            pygame.draw.line(self.screen, COLOR_GRID, (x, 0), (x, WINDOW_HEIGHT))
+        for y in range(0, WINDOW_HEIGHT, CELL_SIZE):
+            pygame.draw.line(self.screen, COLOR_GRID, (0, y), (WINDOW_WIDTH, y))
+
+    def draw_cells(self):
+        for row in range(self.rows):
+            for col in range(self.cols):
+                if self.grid.grid[row][col] == 1:
+                    pygame.draw.rect(
+                        self.screen,
+                        (0, 200, 0),
+                        (col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE),
+                    )
+
+    def draw_hud(self):
+        text = f"Generation: {self.grid.generation}  Alive: {self.grid.alive_count()}  [{'RUNNING' if self.simulation_running else 'PAUSED'}]"
+        surf = self.font.render(text, True, COLOR_TEXT)
+        self.screen.blit(surf, (10, 10))
 
     def draw(self):
-        """Rysowanie na ekran."""
         self.screen.fill(COLOR_BG)
-
+        self.draw_cells()
+        self.draw_grid()
+        self.draw_hud()
         pygame.display.flip()
