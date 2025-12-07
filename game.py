@@ -10,6 +10,7 @@ from config import (
     COLOR_TEXT,
 )
 from grid import CellGrid
+from sound_manager import SoundManager
 
 
 class GameApp:
@@ -29,6 +30,9 @@ class GameApp:
 
         # Stan symulacji
         self.simulation_running = False
+
+        # Dźwięki
+        self.sounds = SoundManager()
 
         # Czcionka
         self.font = pygame.font.SysFont("consolas", 18)
@@ -51,12 +55,21 @@ class GameApp:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
+
                 elif event.key == pygame.K_SPACE:
+                    # start/pauza symulacji
                     self.simulation_running = not self.simulation_running
+                    self.sounds.play("click")
+
                 elif event.key == pygame.K_r:
+                    # losowa plansza
                     self.grid.randomize()
+                    self.sounds.play("click")
+
                 elif event.key == pygame.K_c:
+                    # wyczyszczenie planszy
                     self.grid.clear()
+                    self.sounds.play("clear")
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -64,6 +77,7 @@ class GameApp:
                     col = x // CELL_SIZE
                     row = y // CELL_SIZE
                     self.grid.toggle_cell(col, row)
+                    self.sounds.play("click")
 
     def update(self):
         if self.simulation_running:
@@ -86,7 +100,12 @@ class GameApp:
                     )
 
     def draw_hud(self):
-        text = f"Generation: {self.grid.generation}  Alive: {self.grid.alive_count()}  [{'RUNNING' if self.simulation_running else 'PAUSED'}]"
+        status = "RUNNING" if self.simulation_running else "PAUSED"
+        text = (
+            f"Generation: {self.grid.generation}  "
+            f"Alive: {self.grid.alive_count()}  "
+            f"[{status}]"
+        )
         surf = self.font.render(text, True, COLOR_TEXT)
         self.screen.blit(surf, (10, 10))
 

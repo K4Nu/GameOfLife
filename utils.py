@@ -1,6 +1,5 @@
 import os
 
-
 def resource_path(*parts: str) -> str:
     """
     Zwraca absolutną ścieżkę do pliku z katalogu 'assets'.
