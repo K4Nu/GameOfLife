@@ -1,14 +1,17 @@
+# config.py
+
 # Rozmiar okna
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 
-# Siatka
+# Rozmiar komórki
 CELL_SIZE = 20
 
 # FPS
 FPS = 60
 
-# Kolory
-COLOR_BG = (10, 10, 40)       # tło
-COLOR_GRID = (50, 50, 80)     # siatka
-COLOR_TEXT = (220, 220, 220)  # tekst HUD
+# Kolory (RGB)
+COLOR_BG = (0, 0, 0)          # tło: czarne
+COLOR_GRID = (40, 40, 40)     # siatka: bardzo ciemna szarość
+COLOR_TEXT = (200, 200, 200)  # tekst HUD: szary
+COLOR_CELL = (255, 0, 0)      # komórki: czerwone

@@ -1,4 +1,7 @@
+# grid.py
+
 import random
+
 
 class CellGrid:
     """Reprezentuje siatkę komórek Game of Life."""
@@ -40,9 +43,13 @@ class CellGrid:
                     count += self.grid[nr][nc]
         return count
 
-    def step(self):
-        """Oblicza kolejne pokolenie według zasad Conwaya."""
+    def step(self) -> bool:
+        """
+        Oblicza kolejne pokolenie według zasad Conwaya.
+        Zwraca True, jeśli stan planszy się zmienił, inaczej False.
+        """
         new_grid = [[0 for _ in range(self.cols)] for _ in range(self.rows)]
+        changed = False
 
         for r in range(self.rows):
             for c in range(self.cols):
@@ -55,8 +62,12 @@ class CellGrid:
                 else:
                     new_grid[r][c] = 0
 
+                if new_grid[r][c] != self.grid[r][c]:
+                    changed = True
+
         self.grid = new_grid
         self.generation += 1
+        return changed
 
     def alive_count(self):
         """Zwraca liczbę żywych komórek."""
