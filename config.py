@@ -1,8 +1,10 @@
-# config.py
 
 # Rozmiar okna
 WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
+WINDOW_HEIGHT = 640
+
+# Wysokość paska HUD
+HUD_HEIGHT = 40
 
 # Rozmiar komórki
 CELL_SIZE = 20
@@ -15,3 +17,4 @@ COLOR_BG = (0, 0, 0)          # tło: czarne
 COLOR_GRID = (40, 40, 40)     # siatka: bardzo ciemna szarość
 COLOR_TEXT = (200, 200, 200)  # tekst HUD: szary
 COLOR_CELL = (255, 0, 0)      # komórki: czerwone
+COLOR_HUD_BG = (20, 20, 30)   # ← NOWE: tło HUD

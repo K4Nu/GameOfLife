@@ -1,5 +1,6 @@
 import pygame
 from utils import resource_path
+import os
 
 class SpriteSheet:
     """
@@ -56,10 +57,16 @@ class GraphicsManager:
 
     def _load_background(self) -> pygame.Surface:
         try:
-            bg_image = pygame.image.load(resource_path("background.png")).convert()
+            path = resource_path("background.png")
+            print(f"🔍 Trying to load background from: {path}")
+            print(f"📁 File exists: {os.path.exists(path)}")
+
+            bg_image = pygame.image.load(path).convert()
             bg_image = pygame.transform.scale(bg_image, (self.width, self.height))
+            print("✅ Background loaded successfully!")
             return bg_image
-        except Exception:
+        except Exception as e:
+            print(f"❌ Failed to load background: {e}")
             # awaryjne tło
             fallback = pygame.Surface((self.width, self.height))
             fallback.fill((10, 10, 40))
